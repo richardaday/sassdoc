@@ -35,3 +35,18 @@ Feature: user parses sass file
     This is the documentation for the variable: color
 
     """
+
+    Given I have a sass file containing
+    """
+    //**
+      Background image used for overlays
+    !bg_img = "my_image.jpg"
+    """
+    When I parse the sass file
+    Then the parser should say
+    """
+    Variable: !bg_img
+    ------------------
+    Background image used for overlays
+
+    """

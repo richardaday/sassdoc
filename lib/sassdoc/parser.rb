@@ -26,7 +26,7 @@ module SassDoc
       end
       
       output = "Variable: !#{variable_node.name}\n"
-      output += "-----------------\n"
+      output += "#{"-" * (output.length)}\n"
       output += "#{comment_node.children[0].text}\n"
     end
   end
