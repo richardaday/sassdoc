@@ -15,8 +15,15 @@ module SassDoc
     def parse
       sass_tree = generateTree
 
-      comment_node = sass_tree.children[0]
-      variable_node = sass_tree.children[1]
+      comment_node = nil
+      variable_node = nil
+      sass_tree.children.each do |child|
+        if child.is_a? Sass::Tree::CommentNode
+          comment_node = child
+        elsif child.is_a? Sass::Tree::VariableNode
+          variable_node = child
+        end
+      end
       
       output = "Variable: !#{variable_node.name}\n"
       output += "-----------------\n"
