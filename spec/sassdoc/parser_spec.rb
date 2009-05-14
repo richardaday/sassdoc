@@ -91,6 +91,26 @@ Background image used for overlays
           eos
       end
 
+      it "should ignore variable nodes that do not have a comment" do
+        sass_file = generate_sass_file( <<-eos
+!color = red
+
+//**
+  Background image used for overlays
+!bg_img = "my_image.jpg"
+          eos
+        )
+
+        parser = SassDoc::Parser.new(sass_file.path)
+        messenger = parser.parse
+
+        messenger.should == <<-eos
+Variable: !bg_img
+------------------
+Background image used for overlays
+          eos
+      end
+
     end
 
   end

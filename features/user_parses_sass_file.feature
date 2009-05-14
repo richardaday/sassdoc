@@ -60,3 +60,21 @@ Feature: user parses sass file
     Background image used for overlays
 
     """
+
+  Scenario: documenting only one of many variable nodes
+    Given I have a sass file containing
+    """
+    !color = red
+
+    //**
+      Background image used for overlays
+    !bg_img = "my_image.jpg"
+    """
+    When I parse the sass file
+    Then the parser should say
+    """
+    Variable: !bg_img
+    ------------------
+    Background image used for overlays
+
+    """

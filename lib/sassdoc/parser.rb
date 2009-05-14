@@ -17,12 +17,13 @@ module SassDoc
 
       comment_nodes = []
       variable_nodes = []
+      prev_child = nil
       sass_tree.children.each do |child|
-        if child.is_a? Sass::Tree::CommentNode
-          comment_nodes << child
-        elsif child.is_a? Sass::Tree::VariableNode
+        if child.is_a?(Sass::Tree::VariableNode) && prev_child.is_a?(Sass::Tree::CommentNode)
           variable_nodes << child
+          comment_nodes << prev_child
         end
+        prev_child = child
       end
       
       output = ""
