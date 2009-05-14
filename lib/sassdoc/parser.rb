@@ -15,19 +15,28 @@ module SassDoc
     def parse
       sass_tree = generateTree
 
-      comment_node = nil
-      variable_node = nil
+      comment_nodes = []
+      variable_nodes = []
       sass_tree.children.each do |child|
         if child.is_a? Sass::Tree::CommentNode
-          comment_node = child
+          comment_nodes << child
         elsif child.is_a? Sass::Tree::VariableNode
-          variable_node = child
+          variable_nodes << child
         end
       end
       
-      output = "Variable: !#{variable_node.name}\n"
-      output += "#{"-" * (output.length)}\n"
-      output += "#{comment_node.children[0].text}\n"
+      output = ""
+      variable_nodes.each_with_index { |variable_node, index|
+        output += "Variable: !#{variable_node.name}\n"
+        output += "#{"-" * (11 + variable_node.name.length + 1)}\n"
+        output += "#{comment_nodes[index].children[0].text}\n"
+
+        if index != (variable_nodes.length - 1)
+          output += "\n"
+        end
+      }
+
+      output
     end
   end
 end

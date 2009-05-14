@@ -65,24 +65,12 @@ This is the documentation for the variable: color
 
       end
 
-      it "should make the seperator be equal to the line before it plus 1 character" do
+      it "should be able to handle multiple variable nodes" do
         sass_file = generate_sass_file( <<-eos
 //**
   This is the documentation for the variable: color
 !color = red
-          eos
-        )
 
-        parser = SassDoc::Parser.new(sass_file.path)
-        messenger = parser.parse
-
-        messenger.should == <<-eos
-Variable: !color
------------------
-This is the documentation for the variable: color
-          eos
-
-        sass_file = generate_sass_file( <<-eos
 //**
   Background image used for overlays
 !bg_img = "my_image.jpg"
@@ -93,11 +81,16 @@ This is the documentation for the variable: color
         messenger = parser.parse
 
         messenger.should == <<-eos
+Variable: !color
+-----------------
+This is the documentation for the variable: color
+
 Variable: !bg_img
 ------------------
 Background image used for overlays
           eos
       end
+
     end
 
   end
