@@ -25,8 +25,8 @@ module SassDoc
       end
     end
 
-    context "parsing a sassdoc file" do
-      it "should output the documentation related to CommentNodes" do
+    context "when parsing sass files containing comments" do
+      it "should recognize a single line comment" do
         sass_file = generate_sass_file( <<-eos
 //**
   This is the documentation for the variable: color
@@ -44,6 +44,32 @@ This is the documentation for the variable: color
           eos
       end
 
+      it "should recognize comments that span multiple lines" do
+        sass_file = generate_sass_file( <<-eos
+//**
+  This table width is used in the main table
+  located on the home page
+
+    NOTE: It is also used in certain other pages.
+!table_width = red
+          eos
+        )
+
+        parser = SassDoc::Parser.new(sass_file.path)
+        messenger = parser.parse
+
+        messenger.should == <<-eos
+Variable: !table_width
+-----------------------
+This table width is used in the main table
+located on the home page
+
+  NOTE: It is also used in certain other pages.
+          eos
+      end
+    end
+
+    context "parsing a sassdoc file" do
       it "should not care if there are extra Sass Nodes in the sass file" do
         sass_file = generate_sass_file( <<-eos
 h1

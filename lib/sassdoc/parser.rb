@@ -9,7 +9,7 @@ module SassDoc
         f.read
       end
 
-      Sass::Engine.new(@contents).send :render_to_tree
+      Sass::Engine.new(@contents).send :to_tree
     end
 
     def parse
@@ -25,12 +25,14 @@ module SassDoc
         end
         prev_child = child
       end
-      
+
       output = ""
       variable_nodes.each_with_index { |variable_node, index|
         output += "Variable: !#{variable_node.name}\n"
         output += "#{"-" * (11 + variable_node.name.length + 1)}\n"
-        output += "#{comment_nodes[index].children[0].text}\n"
+
+        comment = comment_nodes[index].value
+        output += "#{comment[3,comment.length]}\n"
 
         if index != (variable_nodes.length - 1)
           output += "\n"
@@ -39,6 +41,7 @@ module SassDoc
 
       output
     end
+
   end
 end
 

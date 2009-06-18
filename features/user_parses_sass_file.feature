@@ -78,3 +78,40 @@ Feature: user parses sass file
     Background image used for overlays
 
     """
+
+  #Comment stuff should be moved to another file
+  Scenario: documenting variable node with multiline comment
+    Given I have a sass file containing
+    """
+    //**
+      This table width is used in the main table
+      located on the home page
+    !table_width = red
+    """
+    When I parse the sass file
+    Then the parser should say
+    """
+    Variable: !table_width
+    -----------------------
+    This table width is used in the main table
+    located on the home page
+
+    """
+
+  Scenario: documenting variable node with multiline comment whose second line has whitespace in the beggining
+    Given I have a sass file containing
+    """
+    //**
+      This table width is used in the main table
+        located on the home page
+    !table_width = red
+    """
+    When I parse the sass file
+    Then the parser should say
+    """
+    Variable: !table_width
+    -----------------------
+    This table width is used in the main table
+      located on the home page
+
+    """
