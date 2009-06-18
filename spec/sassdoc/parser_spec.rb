@@ -28,8 +28,7 @@ module SassDoc
     context "when parsing sass files containing comments" do
       it "should recognize a single line comment" do
         sass_file = generate_sass_file( <<-eos
-//**
-  This is the documentation for the variable: color
+//** This is the documentation for the variable: color
 !color = red
           eos
         )
@@ -90,7 +89,9 @@ This is the documentation for the variable: color
           eos
 
       end
+    end
 
+    context "parsing variable nodes" do
       it "should be able to handle multiple variable nodes" do
         sass_file = generate_sass_file( <<-eos
 //**
@@ -137,6 +138,27 @@ Background image used for overlays
           eos
       end
 
+    end
+
+    context "parsing mixin nodes" do
+      it "should display the documentation for a single mixin node" do
+        sass_file = generate_sass_file( <<-eos
+//**
+  This mixin sets the color as blue
+=alternating-colors()
+  :color blue
+          eos
+        )
+
+        parser = SassDoc::Parser.new(sass_file.path)
+        messenger = parser.parse
+
+        messenger.should == <<-eos
+Mixin: alternating-colors()
+----------------------------
+This mixin sets the color as blue
+          eos
+      end
     end
 
   end

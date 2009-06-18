@@ -17,10 +17,14 @@ module SassDoc
 
       comment_nodes = []
       variable_nodes = []
+      mixin_nodes = []
       prev_child = nil
       sass_tree.children.each do |child|
         if child.is_a?(Sass::Tree::VariableNode) && prev_child.is_a?(Sass::Tree::CommentNode)
           variable_nodes << child
+          comment_nodes << prev_child
+        elsif child.is_a?(Sass::Tree::MixinDefNode) && prev_child.is_a?(Sass::Tree::CommentNode)
+          mixin_nodes << child
           comment_nodes << prev_child
         end
         prev_child = child
@@ -39,6 +43,18 @@ module SassDoc
         end
       }
 
+      mixin_nodes.each_with_index { |mixin_node, index|
+        output += "Mixin: #{mixin_node.name}()\n"
+        output += "#{"-" * (9 + mixin_node.name.length + 1)}\n"
+
+        comment = comment_nodes[index].value
+        output += "#{comment[3,comment.length]}\n"
+
+        if index != (mixin_nodes.length - 1)
+          output += "\n"
+        end
+      }
+
       output
     end
 
@@ -48,6 +64,9 @@ end
 module Sass
   module Tree
     class VariableNode < Node
+      attr_accessor :name
+    end
+    class MixinDefNode < Node
       attr_accessor :name
     end
   end
