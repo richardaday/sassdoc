@@ -78,3 +78,38 @@ Feature: user parses variable nodes
     Background image used for overlays
 
     """
+
+  Scenario: documenting single line comment of a variable node
+    Given I have a sass file containing
+    """
+    //** The background color of the page
+    !page_bgcolor = #000000
+    """
+    When I parse the sass file
+    Then the parser should say
+    """
+    Variable: !page_bgcolor
+    ------------------------
+    The background color of the page
+
+    """
+
+  Scenario: documenting multi line comment of a variable node
+    Given I have a sass file containing
+    """
+    //**
+      This table width is used in the main table
+      located on the home page
+        NOTE: It is also used in certain other pages
+    !table_width  = 500px
+    """
+    When I parse the sass file
+    Then the parser should say
+    """
+    Variable: !table_width
+    -----------------------
+    This table width is used in the main table
+    located on the home page
+      NOTE: It is also used in certain other pages
+
+    """
