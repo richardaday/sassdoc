@@ -19,3 +19,21 @@ Feature: user parses mixin nodes
     This mixin sets the color as blue
 
     """
+
+  Scenario: documenting a mixin node with one argument
+    Given I have a sass file containing
+    """
+    //**
+      This mixin sets the color as the passing argument
+    =alternating-colors(!color)
+      :color !color
+    """
+    When I parse the sass file
+    Then the parser should say
+    """
+    Mixin: alternating-colors(!color)
+    ----------------------------
+    This mixin sets the color as the passing argument
+
+    """
+

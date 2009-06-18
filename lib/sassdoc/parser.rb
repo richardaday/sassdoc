@@ -44,7 +44,7 @@ module SassDoc
       }
 
       mixin_nodes.each_with_index { |mixin_node, index|
-        output += "Mixin: #{mixin_node.name}()\n"
+        output += "Mixin: #{mixin_node.name}(#{mixin_node.args[0] ? '!'+mixin_node.args[0][0] : ''})\n"
         output += "#{"-" * (9 + mixin_node.name.length + 1)}\n"
 
         comment = comment_nodes[index].value
@@ -68,6 +68,7 @@ module Sass
     end
     class MixinDefNode < Node
       attr_accessor :name
+      attr_accessor :args
     end
   end
 end
